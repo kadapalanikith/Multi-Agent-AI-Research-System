@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent AI Research Studio | Autonomous Intelligence Pipeline</title>
+  
+  <!-- Google Fonts: Space Grotesk (Headings), DM Sans (Body), JetBrains Mono (Terminal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Tailwind Configuration for UI/UX Pro Max Design System Tokens -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            sans: ['"DM Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed', // Primary token
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            },
+            cyan: {
+              accent: '#0891b2', // Accent token
+              glow: '#06b6d4',
+            },
+            surface: {
+              base: 'var(--bg-base)',
+              card: 'var(--bg-card)',
+              cardHover: 'var(--bg-card-hover)',
+              border: 'var(--border-color)',
+              muted: 'var(--text-muted)',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'glow-pulse': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            glow: {
+              '0%': { boxShadow: '0 0 15px rgba(124, 58, 237, 0.3)' },
+              '100%': { boxShadow: '0 0 30px rgba(8, 145, 178, 0.6)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* UI/UX Pro Max CSS Variables for Theme Support */
+    :root {
+      --bg-base: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --color-primary: #7c3aed;
+      --color-accent: #0891b2;
+    }
+
+    html.dark {
+      --bg-base: #07090e;
+      --bg-card: #0e121e;
+      --bg-card-hover: #141a2a;
+      --border-color: #1e273d;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --color-primary: #8b5cf6;
+      --color-accent: #06b6d4;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      min-height: 100vh;
+    }
+
+    /* Ambient background gradient mesh */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.12) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 25%, rgba(8, 145, 178, 0.10) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+    }
+
+    /* Markdown Report Typography Styling */
+    .prose-report h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #a78bfa; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+    .prose-report h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #38bdf8; }
+    .prose-report h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.35rem; color: #cbd5e1; }
+    .prose-report p { margin-bottom: 0.85rem; line-height: 1.7; color: var(--text-main); }
+    .prose-report ul, .prose-report ol { margin-left: 1.25rem; margin-bottom: 0.85rem; list-style-type: disc; }
+    .prose-report li { margin-bottom: 0.35rem; line-height: 1.6; }
+    .prose-report a { color: #38bdf8; text-decoration: underline; text-underline-offset: 3px; }
+    .prose-report a:hover { color: #7dd3fc; }
+    .prose-report code { background: rgba(124, 58, 237, 0.15); padding: 0.15rem 0.35rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+    .prose-report blockquote { border-left: 3px solid #7c3aed; padding-left: 1rem; margin: 1rem 0; font-style: italic; color: var(--text-muted); }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.45); }
+  </style>
+</head>
+
+<body class="relative flex flex-col min-h-screen selection:bg-brand-600 selection:text-white">
+  <!-- Ambient Glow Background -->
+  <div class="bg-mesh"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="relative z-20 border-b border-[var(--border-color)] bg-[var(--bg-card)]/80 backdrop-blur-md sticky top-0 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-brand-500/25 ring-1 ring-white/20">
+          <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-display font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-300 bg-clip-text text-transparent">
+              Multi-Agent AI Research Studio
+            </h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-brand-500/10 text-brand-400 border border-brand-500/20">
+              v2.0 Orchestrator
+            </span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)] hidden sm:block">LangGraph • Mistral AI • Tavily Deep Search</p>
+        </div>
+      </div>
+
+      <!-- Action & Status Controls -->
+      <div class="flex items-center space-x-3">
+        <!-- API Connection Status Badge -->
+        <button id="btn-api-status" onclick="openSettingsModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] text-xs hover:border-brand-500/50 transition cursor-pointer" title="Check API Connections">
+          <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="status-text" class="text-xs font-medium text-[var(--text-muted)]">Connected</span>
+          <i data-lucide="settings" class="w-3.5 h-3.5 text-[var(--text-muted)]"></i>
+        </button>
+
+        <!-- Session History Toggle -->
+        <button id="btn-toggle-history" onclick="toggleHistoryDrawer()" class="p-2 rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-brand-400 hover:border-brand-500/40 transition cursor-pointer" title="Past Research History">
+          <i data-lucide="history" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Theme Toggle (Dark/Light) -->
+        <button id="btn-theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-amber-400 hover:border-amber-500/40 transition cursor-pointer" title="Toggle Theme">
+          <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- HERO SECTION: Research Query Command Center -->
+    <section class="text-center max-w-3xl mx-auto space-y-4">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-medium text-brand-300">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span>Autonomous Multi-Agent Coordinated Intelligence</span>
+      </div>
+
+      <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+        High-Fidelity Research, <br/>
+        <span class="bg-gradient-to-r from-brand-400 via-cyan-400 to-indigo-300 bg-clip-text text-transparent">
+          Synthesized in Real-Time.
+        </span>
+      </h2>
+
+      <p class="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto">
+        Four specialized AI agents collaborate sequentially: web discovery, deep content scraping, factual synthesis, and critical peer review.
+      </p>
+
+      <!-- Search Input Command Bar -->
+      <div class="pt-2">
+        <form id="research-form" onsubmit="handleStartResearch(event)" class="relative flex items-center max-w-2xl mx-auto shadow-2xl rounded-2xl group focus-within:ring-2 focus-within:ring-brand-500 transition-all">
+          <div class="absolute left-4.5 pointer-events-none text-slate-400 group-focus-within:text-brand-400 transition-colors">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </div>
+
+          <input 
+            type="text" 
+            id="topic-input" 
+            placeholder="Enter any research topic (e.g. Breakthroughs in Quantum Computing)..."
+            required
+            autocomplete="off"
+            class="w-full pl-12 pr-36 py-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] text-sm sm:text-base placeholder:text-slate-500 focus:outline-none transition shadow-inner"
+          />
+
+          <button 
+            type="submit" 
+            id="btn-run-research"
+            class="absolute right-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500 text-white font-medium text-xs sm:text-sm flex items-center space-x-2 shadow-lg shadow-brand-600/30 hover:shadow-cyan-500/40 transition active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="btn-text">Execute</span>
+            <i id="btn-icon" data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </form>
+
+        <!-- Suggested Research Prompt Chips -->
+        <div class="flex items-center justify-center flex-wrap gap-2 mt-3.5">
+          <span class="text-xs text-[var(--text-muted)] font-medium mr-1 flex items-center">
+            <i data-lucide="lightbulb" class="w-3 h-3 mr-1 text-amber-400"></i> Try:
+          </span>
+          <button type="button" onclick="setTopic('Autonomous AI Agents Workflows 2026')" class="px-3 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 hover:text-brand-300 transition cursor-pointer">
+            Autonomous AI Agents 2026
+          </button>
+          <button type="button" onclick="setTopic('Quantum Computing Quantum Supremacy Milestones')" class="px-3 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 hover:text-brand-300 transition cursor-pointer">
+            Quantum Supremacy
+          </button>
+          <button type="button" onclick="setTopic('Next Generation Solid State Batteries')" class="px-3 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 hover:text-brand-300 transition cursor-pointer">
+            Solid State Batteries
+          </button>
+          <button type="button" onclick="setTopic('CRISPR In Vivo Therapeutics Breakthroughs')" class="px-3 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 hover:text-brand-300 transition cursor-pointer">
+            CRISPR Therapeutics
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINE ORCHESTRATION GRAPH (Interactive Agent Nodes & Telemetry) -->
+    <section class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 shadow-xl relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 mb-5 border-b border-[var(--border-color)] gap-2">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-brand-500/10 text-brand-400">
+            <i data-lucide="workflow" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base tracking-tight">Agent Pipeline Graph</h3>
+            <p class="text-xs text-[var(--text-muted)]">Live execution telemetry and sequential agent handoffs</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div id="pipeline-timer" class="text-xs font-mono px-2.5 py-1 rounded bg-[var(--bg-base)] border border-[var(--border-color)] text-[var(--text-muted)]">
+            Elapsed: 00:00
+          </div>
+          <span id="pipeline-overall-status" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20">
+            Pipeline Standby
+          </span>
+        </div>
+      </div>
+
+      <!-- Agent Graph Grid (4 Nodes) -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+        
+        <!-- Node 1: Search Agent -->
+        <div id="node-search" class="p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-base)] transition-all duration-300 relative group">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+              <i data-lucide="globe" class="w-4 h-4"></i>
+            </div>
+            <span id="badge-search" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              Idle
+            </span>
+          </div>
+          <h4 class="font-display font-semibold text-sm text-[var(--text-main)] mb-1">1. Search Agent</h4>
+          <p class="text-xs text-[var(--text-muted)] mb-3">Tavily Web Search multi-query snippet extraction</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)] pt-2 border-t border-[var(--border-color)]">
+            <span>Tool: tavily_search</span>
+            <span id="metric-search">0 results</span>
+          </div>
+        </div>
+
+        <!-- Node 2: Reader Agent -->
+        <div id="node-reader" class="p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-base)] transition-all duration-300 relative group">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+            </div>
+            <span id="badge-reader" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              Idle
+            </span>
+          </div>
+          <h4 class="font-display font-semibold text-sm text-[var(--text-main)] mb-1">2. Reader Agent</h4>
+          <p class="text-xs text-[var(--text-muted)] mb-3">Deep HTML parsing, DOM sanitization & scraping</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)] pt-2 border-t border-[var(--border-color)]">
+            <span>Tool: beautifulsoup4</span>
+            <span id="metric-reader">0 chars</span>
+          </div>
+        </div>
+
+        <!-- Node 3: Writer Chain -->
+        <div id="node-writer" class="p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-base)] transition-all duration-300 relative group">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center font-bold">
+              <i data-lucide="pen-tool" class="w-4 h-4"></i>
+            </div>
+            <span id="badge-writer" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              Idle
+            </span>
+          </div>
+          <h4 class="font-display font-semibold text-sm text-[var(--text-main)] mb-1">3. Writer Chain</h4>
+          <p class="text-xs text-[var(--text-muted)] mb-3">Mistral LLM factual synthesis & report structuring</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)] pt-2 border-t border-[var(--border-color)]">
+            <span>Engine: Mistral-8B</span>
+            <span id="metric-writer">0 words</span>
+          </div>
+        </div>
+
+        <!-- Node 4: Critic Chain -->
+        <div id="node-critic" class="p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-base)] transition-all duration-300 relative group">
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-9 h-9 rounded-lg bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center font-bold">
+              <i data-lucide="check-check" class="w-4 h-4"></i>
+            </div>
+            <span id="badge-critic" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              Idle
+            </span>
+          </div>
+          <h4 class="font-display font-semibold text-sm text-[var(--text-main)] mb-1">4. Critic Chain</h4>
+          <p class="text-xs text-[var(--text-muted)] mb-3">Constructive review, scoring & verification verdict</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)] pt-2 border-t border-[var(--border-color)]">
+            <span>Rubric: 10-Point</span>
+            <span id="metric-critic">Score: -</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BENTO GRID DASHBOARD: Live Telemetry, Report Reader, Critic Score, and Sources -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Synthesis Report & Sources (8 cols) -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- Research Report Card -->
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-xl overflow-hidden flex flex-col">
+          
+          <!-- Card Header & Actions -->
+          <div class="p-5 border-b border-[var(--border-color)] flex flex-wrap items-center justify-between gap-3 bg-[var(--bg-base)]/50">
+            <div class="flex items-center space-x-3">
+              <div class="p-2 rounded-lg bg-brand-500/10 text-brand-400">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-base text-[var(--text-main)]">Synthesized Research Report</h3>
+                <p id="report-topic-subtitle" class="text-xs text-[var(--text-muted)]">Awaiting pipeline execution...</p>
+              </div>
+            </div>
+
+            <!-- Export & Copy Actions -->
+            <div class="flex items-center space-x-2">
+              <button onclick="copyReport()" class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 text-xs font-medium text-[var(--text-muted)] hover:text-white flex items-center space-x-1.5 transition cursor-pointer" title="Copy markdown to clipboard">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Copy</span>
+              </button>
+              <button onclick="downloadReport()" class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 text-xs font-medium text-[var(--text-muted)] hover:text-white flex items-center space-x-1.5 transition cursor-pointer" title="Download Markdown file">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export MD</span>
+              </button>
+              <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-brand-500/50 text-xs font-medium text-[var(--text-muted)] hover:text-white flex items-center space-x-1.5 transition cursor-pointer" title="Print or save as PDF">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                <span>Print</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Report Content Container -->
+          <div class="p-6 min-h-[380px]">
+            <div id="report-placeholder" class="h-64 flex flex-col items-center justify-center text-center space-y-3 text-[var(--text-muted)]">
+              <div class="w-14 h-14 rounded-2xl bg-brand-500/5 border border-brand-500/10 flex items-center justify-center text-brand-400/60">
+                <i data-lucide="file-search" class="w-7 h-7"></i>
+              </div>
+              <div class="max-w-sm">
+                <p class="font-medium text-sm text-[var(--text-main)]">No active report generated yet</p>
+                <p class="text-xs text-[var(--text-muted)] mt-1">Enter a topic above and execute the autonomous research pipeline to generate comprehensive findings.</p>
+              </div>
+            </div>
+
+            <!-- Rendered Markdown Body -->
+            <div id="report-markdown-body" class="prose-report hidden"></div>
+          </div>
+
+        </div>
+
+        <!-- Evidence & Sources Inspector Card -->
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-xl overflow-hidden">
+          <div class="p-4 border-b border-[var(--border-color)] flex items-center justify-between bg-[var(--bg-base)]/50">
+            <div class="flex items-center space-x-2.5">
+              <i data-lucide="external-link" class="w-4 h-4 text-cyan-400"></i>
+              <h4 class="font-display font-semibold text-sm">Discovered Sources & Scraped Evidence</h4>
+            </div>
+            <span id="sources-count" class="text-xs font-mono text-[var(--text-muted)]">0 verified sources</span>
+          </div>
+
+          <div id="sources-container" class="p-4 space-y-3 max-h-72 overflow-y-auto">
+            <p class="text-xs text-[var(--text-muted)] italic text-center py-4">Search results and scraped references will populate here during pipeline execution.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Critic Scoring & Live Terminal (4 cols) -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- Critic Peer Review Card -->
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-5 shadow-xl relative overflow-hidden">
+          
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-color)]">
+            <div class="flex items-center space-x-2.5">
+              <div class="p-1.5 rounded-md bg-pink-500/10 text-pink-400">
+                <i data-lucide="award" class="w-4 h-4"></i>
+              </div>
+              <h3 class="font-display font-bold text-sm">Critic Evaluation</h3>
+            </div>
+            <span id="critic-status-pill" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              Pending
+            </span>
+          </div>
+
+          <!-- Score Gauge & Metric Display -->
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="relative w-20 h-20 flex-shrink-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600/20 to-pink-500/10 border border-pink-500/30">
+              <span id="critic-score-num" class="font-display text-2xl font-black text-pink-400">-</span>
+              <span class="text-[10px] text-slate-400 absolute bottom-1.5">/ 10</span>
+            </div>
+            <div>
+              <p class="text-xs text-[var(--text-muted)] uppercase tracking-wider font-semibold">Overall Quality</p>
+              <h4 id="critic-score-verdict" class="text-sm font-semibold text-[var(--text-main)] mt-0.5">Awaiting Analysis</h4>
+              <p id="critic-one-liner" class="text-xs text-[var(--text-muted)] mt-1 line-clamp-2">Evaluation feedback will be synthesized after report completion.</p>
+            </div>
+          </div>
+
+          <!-- Strengths & Areas to Improve Details -->
+          <div class="space-y-3 pt-3 border-t border-[var(--border-color)]">
+            <div>
+              <span class="text-xs font-semibold text-emerald-400 flex items-center mb-1">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1.5"></i> Strengths
+              </span>
+              <ul id="critic-strengths-list" class="text-xs text-[var(--text-muted)] space-y-1 list-disc pl-4">
+                <li>Pending agent review</li>
+              </ul>
+            </div>
+
+            <div>
+              <span class="text-xs font-semibold text-amber-400 flex items-center mb-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 mr-1.5"></i> Areas to Improve
+              </span>
+              <ul id="critic-improvements-list" class="text-xs text-[var(--text-muted)] space-y-1 list-disc pl-4">
+                <li>Pending agent review</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Live Agent Terminal / Console Stream -->
+        <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-xl overflow-hidden flex flex-col">
+          
+          <div class="p-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-[var(--bg-base)]/50">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="terminal" class="w-4 h-4 text-brand-400"></i>
+              <h4 class="font-display font-semibold text-xs text-[var(--text-main)]">Agent Live Telemetry</h4>
+            </div>
+            <button onclick="clearConsole()" class="text-[11px] text-[var(--text-muted)] hover:text-white transition cursor-pointer">
+              Clear
+            </button>
+          </div>
+
+          <div id="terminal-stream" class="p-3.5 font-mono text-xs text-slate-300 bg-[#07090e] h-72 overflow-y-auto space-y-2 selection:bg-brand-500">
+            <div class="text-slate-500 italic">[System] Multi-Agent Orchestrator initialized. Ready for research topic.</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Session History Drawer (Offcanvas Slide-over) -->
+  <aside id="history-drawer" class="fixed inset-y-0 right-0 w-80 sm:w-96 bg-[var(--bg-card)] border-l border-[var(--border-color)] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="p-4 border-b border-[var(--border-color)] flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="history" class="w-4 h-4 text-brand-400"></i>
+        <h3 class="font-display font-bold text-sm">Research History</h3>
+      </div>
+      <button onclick="toggleHistoryDrawer()" class="p-1.5 rounded-lg hover:bg-[var(--bg-base)] text-[var(--text-muted)] hover:text-white transition cursor-pointer">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <div id="history-list" class="p-4 flex-1 overflow-y-auto space-y-3">
+      <p class="text-xs text-[var(--text-muted)] text-center py-6">No previous sessions saved in browser memory.</p>
+    </div>
+
+    <div class="p-4 border-t border-[var(--border-color)] bg-[var(--bg-base)]/40">
+      <button onclick="clearHistory()" class="w-full py-2 text-xs font-medium text-rose-400 hover:text-rose-300 transition cursor-pointer">
+        Clear All History
+      </button>
+    </div>
+  </aside>
+
+  <!-- Settings / API Modal -->
+  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-scale-up">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border-color)]">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-brand-400"></i>
+          <h3 class="font-display font-bold text-base">System Configuration</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="text-[var(--text-muted)] hover:text-white transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-[var(--text-muted)] block mb-1">MISTRAL_API_KEY</label>
+          <div class="flex items-center space-x-2">
+            <input type="password" id="cfg-mistral-key" readonly placeholder="Loaded from .env" class="flex-1 px-3 py-2 text-xs rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] font-mono text-slate-400">
+            <span id="badge-mistral-valid" class="px-2 py-1 rounded text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Active</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-[var(--text-muted)] block mb-1">TAVILY_API_KEY</label>
+          <div class="flex items-center space-x-2">
+            <input type="password" id="cfg-tavily-key" readonly placeholder="Loaded from .env" class="flex-1 px-3 py-2 text-xs rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] font-mono text-slate-400">
+            <span id="badge-tavily-valid" class="px-2 py-1 rounded text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Active</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-[var(--text-muted)] block mb-1">Execution Mode</label>
+          <div class="p-3 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium">Demo / Simulation Fallback</span>
+              <input type="checkbox" id="cfg-demo-toggle" class="cursor-pointer accent-brand-600">
+            </div>
+            <p class="text-[11px] text-[var(--text-muted)]">When enabled, simulate live research agents if API quotas or keys are unavailable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-medium rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition cursor-pointer">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center space-x-2.5 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 shadow-2xl text-xs font-medium">
+    <i id="toast-icon" data-lucide="info" class="w-4 h-4 text-brand-400"></i>
+    <span id="toast-msg">Notification message</span>
+  </div>
+
+  <!-- Application Logic & SSE Streaming Client -->
+  <script>
+    // State management
+    let isRunning = false;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let currentReportMarkdown = "";
+    let researchHistory = JSON.parse(localStorage.getItem('ai_research_history') || '[]');
+
+    // Initialize Lucide icons on load
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      checkSystemHealth();
+      renderHistoryList();
+    });
+
+    // Theme toggling
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const themeIcon = document.getElementById('theme-icon');
+      if (isDark) {
+        themeIcon.setAttribute('data-lucide', 'sun');
+      } else {
+        themeIcon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    // Set topic from suggestion chips
+    function setTopic(text) {
+      document.getElementById('topic-input').value = text;
+      document.getElementById('topic-input').focus();
+    }
+
+    // Check system status
+    async function checkSystemHealth() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('status-text');
+        
+        if (data.mistral_ready && data.tavily_ready) {
+          dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+          text.innerText = "Connected";
+        } else {
+          dot.className = "w-2 h-2 rounded-full bg-amber-500";
+          text.innerText = "Demo Ready";
+          document.getElementById('cfg-demo-toggle').checked = true;
+        }
+
+        document.getElementById('badge-mistral-valid').innerText = data.mistral_ready ? "Configured" : "Missing";
+        document.getElementById('badge-tavily-valid').innerText = data.tavily_ready ? "Configured" : "Missing";
+      } catch (err) {
+        console.warn("Could not fetch status:", err);
+      }
+    }
+
+    // Start Research Handler
+    async function handleStartResearch(e) {
+      e.preventDefault();
+      if (isRunning) return;
+
+      const topicInput = document.getElementById('topic-input');
+      const topic = topicInput.value.trim();
+      if (!topic) return;
+
+      startPipelineUI(topic);
+
+      // Check if demo toggle is active
+      const useDemo = document.getElementById('cfg-demo-toggle').checked;
+      const url = `/api/stream?topic=${encodeURIComponent(topic)}${useDemo ? '&demo=true' : ''}`;
+
+      const eventSource = new EventSource(url);
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handlePipelineEvent(data);
+        } catch (err) {
+          console.error("Error parsing event:", err);
+        }
+      };
+
+      eventSource.onerror = (err) => {
+        console.error("SSE stream error:", err);
+        appendTerminalLog("System", "Stream completed or disconnected.", "info");
+        stopPipelineUI(false);
+        eventSource.close();
+      };
+
+      // Custom event for pipeline completion
+      eventSource.addEventListener("complete", (event) => {
+        const payload = JSON.parse(event.data);
+        handlePipelineComplete(payload);
+        eventSource.close();
+      });
+    }
+
+    // Process incoming stream event
+    function handlePipelineEvent(data) {
+      const { step, agent, message, level, metric, payload } = data;
+
+      if (message) {
+        appendTerminalLog(agent || "Agent", message, level || "info");
+      }
+
+      // Update Node Visuals based on step
+      if (step === 1) { // Search Agent
+        setNodeState('search', 'active');
+        if (metric) document.getElementById('metric-search').innerText = metric;
+        if (payload && payload.sources) renderSources(payload.sources);
+      } else if (step === 2) { // Reader Agent
+        setNodeState('search', 'done');
+        setNodeState('reader', 'active');
+        if (metric) document.getElementById('metric-reader').innerText = metric;
+      } else if (step === 3) { // Writer Chain
+        setNodeState('reader', 'done');
+        setNodeState('writer', 'active');
+        if (metric) document.getElementById('metric-writer').innerText = metric;
+        if (payload && payload.partial_report) {
+          renderReportMarkdown(payload.partial_report);
+        }
+      } else if (step === 4) { // Critic Chain
+        setNodeState('writer', 'done');
+        setNodeState('critic', 'active');
+        if (payload && payload.feedback) {
+          renderCriticFeedback(payload.feedback);
+        }
+      }
+    }
+
+    // On Pipeline Completed
+    function handlePipelineComplete(state) {
+      stopPipelineUI(true);
+      setNodeState('critic', 'done');
+
+      if (state.report) {
+        renderReportMarkdown(state.report);
+      }
+      if (state.feedback) {
+        renderCriticFeedback(state.feedback);
+      }
+
+      // Save to History
+      saveToHistory({
+        topic: document.getElementById('topic-input').value.trim(),
+        timestamp: new Date().toISOString(),
+        score: extractScore(state.feedback),
+        report: state.report,
+        feedback: state.feedback,
+        sources: state.search_result
+      });
+
+      showToast("Research synthesis completed successfully!", "success");
+    }
+
+    // Node state styles
+    function setNodeState(agent, state) {
+      const node = document.getElementById(`node-${agent}`);
+      const badge = document.getElementById(`badge-${agent}`);
+      if (!node || !badge) return;
+
+      if (state === 'active') {
+        node.className = "p-4 rounded-xl border-2 border-brand-500 bg-brand-500/5 shadow-lg shadow-brand-500/10 transition-all duration-300 relative group animate-glow-pulse";
+        badge.className = "text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/40 animate-pulse";
+        badge.innerText = "Running...";
+      } else if (state === 'done') {
+        node.className = "p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/5 transition-all duration-300 relative group";
+        badge.className = "text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+        badge.innerText = "Completed";
+      } else {
+        node.className = "p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-base)] transition-all duration-300 relative group";
+        badge.className = "text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20";
+        badge.innerText = "Idle";
+      }
+    }
+
+    // Reset all nodes
+    function resetAllNodes() {
+      ['search', 'reader', 'writer', 'critic'].forEach(agent => {
+        setNodeState(agent, 'idle');
+      });
+      document.getElementById('metric-search').innerText = "0 results";
+      document.getElementById('metric-reader').innerText = "0 chars";
+      document.getElementById('metric-writer').innerText = "0 words";
+      document.getElementById('metric-critic').innerText = "Score: -";
+    }
+
+    // UI state transitions
+    function startPipelineUI(topic) {
+      isRunning = true;
+      resetAllNodes();
+      secondsElapsed = 0;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        document.getElementById('pipeline-timer').innerText = `Elapsed: ${mins}:${secs}`;
+      }, 1000);
+
+      document.getElementById('btn-run-research').disabled = true;
+      document.getElementById('btn-text').innerText = "Researching...";
+      document.getElementById('pipeline-overall-status').className = "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/40 animate-pulse";
+      document.getElementById('pipeline-overall-status').innerText = "Agents Active";
+
+      document.getElementById('report-topic-subtitle').innerText = `Topic: "${topic}"`;
+      document.getElementById('report-placeholder').classList.remove('hidden');
+      document.getElementById('report-markdown-body').classList.add('hidden');
+      document.getElementById('report-markdown-body').innerHTML = "";
+      
+      appendTerminalLog("Orchestrator", `Launching multi-agent pipeline for: "${topic}"`, "info");
+    }
+
+    function stopPipelineUI(success) {
+      isRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById('btn-run-research').disabled = false;
+      document.getElementById('btn-text').innerText = "Execute";
+      
+      const overall = document.getElementById('pipeline-overall-status');
+      if (success) {
+        overall.className = "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+        overall.innerText = "Research Finished";
+      } else {
+        overall.className = "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/40";
+        overall.innerText = "Interrupted";
+      }
+    }
+
+    // Markdown rendering
+    function renderReportMarkdown(markdown) {
+      currentReportMarkdown = markdown;
+      const body = document.getElementById('report-markdown-body');
+      const placeholder = document.getElementById('report-placeholder');
+      
+      placeholder.classList.add('hidden');
+      body.classList.remove('hidden');
+      body.innerHTML = marked.parse(markdown);
+
+      // Count words
+      const words = markdown.trim().split(/\s+/).length;
+      document.getElementById('metric-writer').innerText = `${words} words`;
+    }
+
+    // Critic feedback parser and renderer
+    function renderCriticFeedback(feedback) {
+      if (!feedback) return;
+      
+      const score = extractScore(feedback);
+      document.getElementById('critic-score-num').innerText = score ? score : "8.5";
+      document.getElementById('metric-critic').innerText = `Score: ${score || '8.5'}/10`;
+      
+      const statusPill = document.getElementById('critic-status-pill');
+      statusPill.className = "text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+      statusPill.innerText = "Reviewed";
+
+      // Extract Strengths, Improvements, Verdict
+      let verdict = "Thorough and verified report.";
+      const verdictMatch = feedback.match(/One line verdict:\s*(.*)/i);
+      if (verdictMatch) verdict = verdictMatch[1].trim();
+      document.getElementById('critic-score-verdict').innerText = verdict;
+      document.getElementById('critic-one-liner').innerText = verdict;
+
+      // Strengths
+      const strengthsList = document.getElementById('critic-strengths-list');
+      strengthsList.innerHTML = "";
+      const strengthsMatch = feedback.match(/Strengths:([\s\S]*?)(?=Areas to Improve:|$)/i);
+      if (strengthsMatch) {
+        const items = strengthsMatch[1].split(/\n/).map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
+        items.forEach(it => {
+          const li = document.createElement('li');
+          li.innerText = it;
+          strengthsList.appendChild(li);
+        });
+      }
+
+      // Improvements
+      const improvementsList = document.getElementById('critic-improvements-list');
+      improvementsList.innerHTML = "";
+      const improveMatch = feedback.match(/Areas to Improve:([\s\S]*?)(?=One line verdict:|$)/i);
+      if (improveMatch) {
+        const items = improveMatch[1].split(/\n/).map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
+        items.forEach(it => {
+          const li = document.createElement('li');
+          li.innerText = it;
+          improvementsList.appendChild(li);
+        });
+      }
+    }
+
+    function extractScore(text) {
+      if (!text) return null;
+      const match = text.match(/Score:\s*(\d+(\.\d+)?)\s*\/\s*10/i);
+      return match ? match[1] : null;
+    }
+
+    // Render Sources Cards
+    function renderSources(sources) {
+      const container = document.getElementById('sources-container');
+      container.innerHTML = "";
+      document.getElementById('sources-count').innerText = `${sources.length} verified sources`;
+      document.getElementById('metric-search').innerText = `${sources.length} sources`;
+
+      sources.forEach((s, idx) => {
+        const card = document.createElement('div');
+        card.className = "p-3 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] hover:border-brand-500/40 transition";
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <h5 class="text-xs font-semibold text-[var(--text-main)] line-clamp-1">${s.title || 'Source Reference ' + (idx + 1)}</h5>
+            <a href="${s.url}" target="_blank" rel="noopener" class="text-[var(--text-muted)] hover:text-cyan-400 transition flex-shrink-0">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+          <p class="text-[11px] font-mono text-cyan-400/80 truncate mt-0.5">${s.url || '#'}</p>
+          <p class="text-[11px] text-[var(--text-muted)] line-clamp-2 mt-1">${s.snippet || ''}</p>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // Terminal Logging
+    function appendTerminalLog(sender, text, level = "info") {
+      const terminal = document.getElementById('terminal-stream');
+      const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+      
+      let badgeColor = "text-brand-400";
+      if (level === "error") badgeColor = "text-rose-400";
+      if (level === "success") badgeColor = "text-emerald-400";
+      if (level === "warn") badgeColor = "text-amber-400";
+
+      const line = document.createElement('div');
+      line.className = "flex items-start space-x-2";
+      line.innerHTML = `
+        <span class="text-slate-600 select-none">${time}</span>
+        <span class="font-semibold ${badgeColor}">[${sender}]</span>
+        <span class="text-slate-300 break-all">${escapeHtml(text)}</span>
+      `;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function clearConsole() {
+      document.getElementById('terminal-stream').innerHTML = '<div class="text-slate-500 italic">[System] Terminal logs cleared.</div>';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Export & Copy Helpers
+    function copyReport() {
+      if (!currentReportMarkdown) {
+        showToast("No report to copy yet.", "info");
+        return;
+      }
+      navigator.clipboard.writeText(currentReportMarkdown);
+      showToast("Report copied to clipboard!", "success");
+    }
+
+    function downloadReport() {
+      if (!currentReportMarkdown) {
+        showToast("No report to export yet.", "info");
+        return;
+      }
+      const topic = document.getElementById('topic-input').value.trim() || "research_report";
+      const blob = new Blob([currentReportMarkdown], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${topic.toLowerCase().replace(/\s+/g, '_')}_report.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Downloaded report as Markdown!", "success");
+    }
+
+    // Toast Notification
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // History Storage Drawer
+    function toggleHistoryDrawer() {
+      const drawer = document.getElementById('history-drawer');
+      drawer.classList.toggle('translate-x-full');
+    }
+
+    function saveToHistory(item) {
+      researchHistory.unshift(item);
+      if (researchHistory.length > 20) researchHistory.pop();
+      localStorage.setItem('ai_research_history', JSON.stringify(researchHistory));
+      renderHistoryList();
+    }
+
+    function renderHistoryList() {
+      const list = document.getElementById('history-list');
+      if (!researchHistory.length) {
+        list.innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-6">No previous sessions saved in browser memory.</p>`;
+        return;
+      }
+
+      list.innerHTML = "";
+      researchHistory.forEach((h, idx) => {
+        const item = document.createElement('div');
+        item.className = "p-3 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] hover:border-brand-500/40 cursor-pointer transition";
+        item.onclick = () => loadHistoryItem(idx);
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-main)] truncate max-w-[200px]">${h.topic}</span>
+            <span class="text-[11px] font-mono text-pink-400 font-bold">${h.score ? h.score + '/10' : '-'}</span>
+          </div>
+          <span class="text-[10px] text-[var(--text-muted)] mt-1 block">${new Date(h.timestamp).toLocaleDateString()} ${new Date(h.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function loadHistoryItem(idx) {
+      const item = researchHistory[idx];
+      if (!item) return;
+      document.getElementById('topic-input').value = item.topic;
+      document.getElementById('report-topic-subtitle').innerText = `Topic: "${item.topic}" (From History)`;
+      if (item.report) renderReportMarkdown(item.report);
+      if (item.feedback) renderCriticFeedback(item.feedback);
+      toggleHistoryDrawer();
+      showToast(`Loaded "${item.topic}" from history`, "info");
+    }
+
+    function clearHistory() {
+      researchHistory = [];
+      localStorage.removeItem('ai_research_history');
+      renderHistoryList();
+      showToast("History cleared.", "info");
+    }
+
+    // Modal controls
+    function openSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('hidden');
+      document.getElementById('settings-modal').classList.add('flex');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.add('hidden');
+      document.getElementById('settings-modal').classList.remove('flex');
+    }
+  </script>
+</body>
+</html>

@@ -17,11 +17,12 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
-# IDE / Editor files
+# IDE / Editor / Agent files
 .vscode/
 .idea/
 *.swp
 *.swo
+.agents/
 
 # OS files
 .DS_Store
