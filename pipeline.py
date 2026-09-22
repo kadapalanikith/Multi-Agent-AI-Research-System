@@ -1,4 +1,4 @@
-from agents import build_search_agent, build_reader_agent, writer_chain, critic_prompt
+from agents import build_search_agent, build_reader_agent, writer_chain, critic_chain
 
 def run_research_pipeline(topic:str) -> dict:
     state = {}
@@ -14,7 +14,8 @@ def run_research_pipeline(topic:str) -> dict:
         "messages": [("user",f"Find recent,reliable and detailed information about topic: {topic}")]
     })
     
-    state["search_result"] = search_result['messages'][-1]['content']
+    last_search_msg = search_result['messages'][-1]
+    state["search_result"] = getattr(last_search_msg, 'content', str(last_search_msg))
     
     print("\n search result: \n", state["search_result"])
     
@@ -29,11 +30,12 @@ def run_research_pipeline(topic:str) -> dict:
         "messages": [("user",
             f"Based on the following search results about '{topic}', "
             f"pick the most relevant URL and scrape it for deeper content.\n\n"
-            f"Search Results:\n{state['search_results'][:800]}"
+            f"Search Results:\n{state['search_result'][:800]}"
         )]
     })
     
-    state["scraped_content"] = reader_result['messages'][-1]['content']  
+    last_reader_msg = reader_result['messages'][-1]
+    state["scraped_content"] = getattr(last_reader_msg, 'content', str(last_reader_msg))  
     
     print("\n scraped content: \n", state["scraped_content"])
     

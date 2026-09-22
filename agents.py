@@ -1,13 +1,15 @@
+import os
 from langchain.agents import create_agent
-from langchain_openai import ChatOpenAI
+from langchain_mistralai import ChatMistralAI
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from tools import web_search,scrape_url
+from tools import web_search, scrape_url
 from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = ChatOpenAI(model_name="gpt-40-mini", temperature=0)
+model_name = os.getenv("MISTRAL_MODEL", "ministral-8b-latest")
+llm = ChatMistralAI(model=model_name, temperature=0)
 
 # Agent
 

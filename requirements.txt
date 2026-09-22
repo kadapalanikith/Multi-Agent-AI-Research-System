@@ -2,6 +2,7 @@
 # LLM / Mistral
 # ==============================
 mistralai
+langchain-mistralai
 
 # ==============================
 # LangChain Core
